@@ -4,13 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Party;
+use App\Models\CharacterPerk;
+use App\Models\Perk;
 
-class CharacterPerksController extends Controller
+class CharacterPerkController extends Controller
 {
     public function index(Request $request) {
-        $parties = Party::with('positions.characters_value')->get();
+        $perks = Perk::with(['character_perks' => function ($query) use ($request) {
+            $query->where('character_id', $request->character_id)->get();
+        }])->get()->sortByDesc(function ($perk) {
+            return $perk->character_perks->isNotEmpty(); 
+        })
+        ->values();
         return response()->json([
-            'parties' => $parties,
+            'character_perks' => $perks,
             'success' => true,
             'message' => 'Party Fetched Successfully'
         ], 200);
@@ -21,9 +28,9 @@ class CharacterPerksController extends Controller
     }
 
     public function store(Request $request) {
-        $parties = Party::create($request->all());
+        $characterPerks = CharacterPerk::create($request->all());
         return response()->json([
-            'parties' => $parties,
+            'character_perks' => $characterPerks,
             'success' => true,
             'message' => 'Party Added Successfully'
         ], 200);

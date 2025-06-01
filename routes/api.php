@@ -6,6 +6,8 @@ use App\Http\Controllers\PartyController;
 use App\Http\Controllers\PartyPositionController;
 use App\Http\Controllers\PartyPositionCharacterController;
 use App\Http\Controllers\CharacterController;
+use App\Http\Controllers\PerkController;
+use App\Http\Controllers\CharacterPerkController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -25,3 +27,5 @@ Route::apiResource('party', PartyController::class);
 Route::apiResource('party-position', PartyPositionController::class);
 Route::apiResource('party-position-character', PartyPositionCharacterController::class);
 Route::apiResource('character', CharacterController::class);
+Route::apiResource('perk', PerkController::class);
+Route::apiResource('character-perk', CharacterPerkController::class);

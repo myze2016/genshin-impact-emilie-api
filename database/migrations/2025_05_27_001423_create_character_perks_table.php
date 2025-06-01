@@ -17,7 +17,10 @@ return new class extends Migration
             $table->foreign('character_id')
                 ->references('id')->on('characters')
                 ->onDelete('cascade');
-            $table->string('description')->nullable();
+            $table->unsignedBigInteger('perk_id')->nullable();
+            $table->foreign('perk_id')
+                ->references('id')->on('perks')
+                ->onDelete('cascade');
             $table->string('points')->nullable();
             $table->timestamps();
         });

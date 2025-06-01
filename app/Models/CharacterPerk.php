@@ -11,7 +11,7 @@ class CharacterPerk extends Model
 
     protected $fillable = [
         'character_id',
-        'description',
+        'perk_id',
         'points',
         'created_at',
         'updated_at',
@@ -20,5 +20,10 @@ class CharacterPerk extends Model
     public function character()
     {
         return $this->belongsTo(Character::class, 'id', 'character_id');
+    }
+
+    public function perk()
+    {
+        return $this->belongsTo(Perk::class, 'id', 'perk_id');
     }
 }
