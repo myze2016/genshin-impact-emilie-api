@@ -11,6 +11,7 @@ class Party extends Model
 
     protected $fillable = [
         'name',
+        'description',
         'element',
         'reaction',
         'created_at',
