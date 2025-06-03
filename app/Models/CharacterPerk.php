@@ -19,11 +19,11 @@ class CharacterPerk extends Model
 
     public function character()
     {
-        return $this->belongsTo(Character::class, 'id', 'character_id');
+        return $this->belongsTo(Character::class, 'character_id');
     }
 
     public function perk()
     {
-        return $this->belongsTo(Perk::class, 'id', 'perk_id');
+        return $this->belongsTo(Perk::class, 'perk_id');
     }
 }

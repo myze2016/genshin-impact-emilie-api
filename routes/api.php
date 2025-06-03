@@ -29,3 +29,5 @@ Route::apiResource('party-position-character', PartyPositionCharacterController:
 Route::apiResource('character', CharacterController::class);
 Route::apiResource('perk', PerkController::class);
 Route::apiResource('character-perk', CharacterPerkController::class);
+Route::post('character-perk/delete-by-character', [CharacterPerkController::class, 'deletePerkByCharacter']);
+Route::post('character/create/api', [CharacterController::class, 'addCharacterApi']);

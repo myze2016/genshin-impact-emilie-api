@@ -12,6 +12,7 @@ class Character extends Model
     protected $fillable = [
         'name',
         'element',
+        'api_id',
         'created_at',
         'updated_at',
     ];

@@ -12,7 +12,7 @@ class CharacterPerkController extends Controller
     public function index(Request $request) {
         $perks = Perk::with(['character_perks' => function ($query) use ($request) {
             $query->where('character_id', $request->character_id)->get();
-        }])->get()->sortByDesc(function ($perk) {
+        }])->where('name', 'LIKE', '%'.$request->search.'%')->get()->sortByDesc(function ($perk) {
             return $perk->character_perks->isNotEmpty(); 
         })
         ->values();
@@ -41,6 +41,16 @@ class CharacterPerkController extends Controller
     }
 
     public function destroy(Request $request) {
-        
+    }
+
+    public function deletePerkByCharacter(Request $request) {
+        $characterPerk = CharacterPerk::where('character_id', $request->character_id)
+            ->where('perk_id', $request->perk_id)
+            ->delete();
+        return response()->json([
+            'character_perks' => $characterPerk,
+            'success' => true,
+            'message' => 'Perk Deleted Successfully'
+        ], 200);
     }
 }

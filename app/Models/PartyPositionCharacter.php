@@ -15,6 +15,7 @@ class PartyPositionCharacter extends Model
         'element',
         'value',
         'party_position_id',
+        'character_id',
         'created_at',
         'updated_at',
     ];
@@ -24,8 +25,9 @@ class PartyPositionCharacter extends Model
         return $this->belongsTo(PartyPosition::class, 'id', 'party_position_id');
     }
 
-    public function characters()
+    public function character()
     {
-        return $this->hasMany(PartyPositionCharacter::class, 'party_id');
+        return $this->belongsTo(Character::class, 'character_id');
     }
+
 }

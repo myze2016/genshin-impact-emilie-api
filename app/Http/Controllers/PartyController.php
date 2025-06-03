@@ -8,7 +8,7 @@ use App\Models\Party;
 class PartyController extends Controller
 {
     public function index(Request $request) {
-        $parties = Party::with('positions.characters_value')->get();
+        $parties = Party::with('positions.characters_value.character.perks.perk')->get();
         return response()->json([
             'parties' => $parties,
             'success' => true,
