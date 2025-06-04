@@ -16,11 +16,7 @@ class PerkSeeder extends Seeder
          $perks = [
             [
                 'name' => 'Infusion Pyro',
-                'description' => 'Increases fire damage by 20%.',
-            ],
-            [
-                'name' => 'Heal',
-                'description' => 'Grants a shield that absorbs water damage.',
+                'description' => 'Infusion Pyro',
             ],
         ];
 

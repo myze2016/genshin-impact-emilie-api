@@ -16,8 +16,13 @@ class PartyController extends Controller
         ], 200);
     }
 
-    public function show(Request $request) {
-        
+    public function show(Request $request, $id) {
+        $parties = Party::with('positions.characters_value.character.perks.perk')->where('id', $id)->get();
+        return response()->json([
+            'parties' => $parties,
+            'success' => true,
+            'message' => 'Party Fetched Successfully'
+        ], 200);
     }
 
     public function store(Request $request) {
