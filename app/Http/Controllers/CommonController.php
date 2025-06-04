@@ -5,16 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Party;
 use App\Models\Perk;
+use App\Models\Common;
 
-class PerkController extends Controller
+class CommonController extends Controller
 {
     public function index(Request $request) {
-        $perks = Perk::where('name', 'LIKE', '%'.$request->search.'%')->orWhere('description', 'LIKE', '%'.$request->search.'%')->get();
-      
+        $commons = Common::where('name', 'LIKE', '%'.$request->search.'%')->get();
         return response()->json([
-            'perks' => $perks,
+            'commons' => $commons,
             'success' => true,
-            'message' => 'Perk Fetched Successfully'
+            'message' => 'Commons Fetched Successfully'
         ], 200);
     }
 
@@ -24,11 +24,19 @@ class PerkController extends Controller
 
     public function store(Request $request) {
         try {
-            $perks = Perk::create($request->all());
+            $commonExist = Common::where('name', $request->name)->first();
+            if ($commonExist) {
+                return response()->json([
+                'success' => false,
+                'message' => 'Common Exist',
+                'error' => 'exist error'
+                ], 500);
+            }
+            $common = Common::create($request->all());
             return response()->json([
-                'parties' => $perks,
+                'common' => $common,
                 'success' => true,
-                'message' => 'Perk Added Successfully'
+                'message' => 'Common Added Successfully'
             ], 200);
          } catch (\Exception $e) {
             return response()->json([

@@ -15,7 +15,16 @@ class CharacterController extends Controller
                 $subQ->where('name', 'LIKE', '%' . $request->search . '%')
                      ->orWhere('description', 'LIKE', '%' . $request->search . '%');
             });
-        })->with('perks.perk')->get();
+        })->with('perks.perk')->paginate($request->rows_per_page ?? 10);
+        return response()->json([
+            'characters' => $characters,
+            'success' => true,
+            'message' => 'Character Fetched Successfully'
+        ], 200);
+    }
+
+    public function searchName(Request $request) {
+        $characters = Character::where('name', 'LIKE', '%'.$request->search.'%')->with('perks.perk')->paginate($request->rows_per_page ?? 10);
         return response()->json([
             'characters' => $characters,
             'success' => true,
