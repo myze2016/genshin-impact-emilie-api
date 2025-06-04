@@ -13,6 +13,11 @@ class Character extends Model
         'name',
         'element',
         'api_id',
+        'gacha_card_url',
+        'gacha_splash_url',
+        'icon_url',
+        'icon_side_url',
+        'namecard-background_url',
         'created_at',
         'updated_at',
     ];

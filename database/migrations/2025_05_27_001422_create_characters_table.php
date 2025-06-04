@@ -15,6 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->string('element')->nullable();
+            $table->string('gacha_card_url')->nullable();
+            $table->string('gacha_splash_url')->nullable();
+            $table->string('icon_url')->nullable();
+            $table->string('icon_side_url')->nullable();
+            $table->string('namecard-background_url')->nullable();
             $table->string('api_id')->nullable();
             $table->timestamps();
         });

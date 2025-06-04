@@ -65,7 +65,7 @@ class CharacterController extends Controller
     public function addCharacterApi(Request $request) {
         try {
             $characters = Http::get('https://genshin.jmp.blue/characters')->json();
-
+            $teststop = 2;
             foreach ($characters as $character) {
                 
                 $apiIdExist = Character::where('api_id', $character)->first();
@@ -75,25 +75,36 @@ class CharacterController extends Controller
                     $characterInfo = Http::get('https://genshin.jmp.blue/characters/'.$character)->json();
                       
                     $characterExist = Character::where('name', $characterInfo['name'])->first();
-                    
+                    $imgUrl = 'https://genshin.jmp.blue/characters/';
                     if (!$characterExist) {
                         Character::create([
                             'name' => $characterInfo['name'],
                             'element' => $characterInfo['vision'],
                             'api_id' => $character,
+                            'gacha_card_url' => $imgUrl.$character.'/gacha-card.png',
+                            'gacha_splash_url' => $imgUrl.$character.'/gacha-splash.png',
+                            'icon_url' => $imgUrl.$character.'/icon.png',
+                            'icon_side_url' => $imgUrl.$character.'/icon-side.png',
+                            'namecard-background_url' => $imgUrl.$character.'/namecard-background.png',
                         ]);
                     } else {
                         Character::where('id', $characterExist->id)->update([
                             'name' => $characterInfo['name'],
                             'element' => $characterInfo['vision'],
                             'api_id' => $character,
+                            'gacha_card_url' => $imgUrl.$character.'/gacha-card.png',
+                            'gacha_splash_url' => $imgUrl.$character.'/gacha-splash.png',
+                            'icon_url' => $imgUrl.$character.'/icon.png',
+                            'icon_side_url' => $imgUrl.$character.'/icon-side.png',
+                            'namecard-background_url' => $imgUrl.$character.'/namecard-background.png',
                         ]);
                     }
                 } 
+
+                if ($teststop==2) {break;}
             }
             
             return response()->json([
-                'characterList' => $response,
                 'success' => true,
                 'message' => 'Character Added Successfully'
             ], 200);
