@@ -26,15 +26,15 @@ class PerkController extends Controller
         try {
             $perks = Perk::create($request->all());
             return response()->json([
-                'parties' => $perks,
+                'perks' => $perks,
                 'success' => true,
                 'message' => 'Perk Added Successfully'
             ], 200);
          } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to add perk',
-                'error' => $e->getMessage()
+                'message' => $e->getMessage(),
+                'error' => 500
             ], 500);
         }
     }
