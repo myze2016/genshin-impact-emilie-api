@@ -14,6 +14,7 @@ class Party extends Model
         'description',
         'element',
         'reaction',
+        'character_id',
         'created_at',
         'updated_at',
     ];
@@ -21,5 +22,10 @@ class Party extends Model
     public function positions()
     {
         return $this->hasMany(PartyPosition::class, 'party_id');
+    }
+
+    public function character()
+    {
+        return $this->belongsTo(character::class, 'character_id');
     }
 }

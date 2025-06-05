@@ -34,3 +34,4 @@ Route::post('character-perk/delete-by-character', [CharacterPerkController::clas
 Route::post('character/create/api', [CharacterController::class, 'addCharacterApi']);
 Route::apiResource('common', CommonController::class);
 Route::get('character-get-by-name', [CharacterController::class, 'searchName']);
+Route::post('party-image', [PartyController::class, 'addPartyImage']);

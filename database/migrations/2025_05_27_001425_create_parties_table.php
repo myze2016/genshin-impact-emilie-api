@@ -15,6 +15,10 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('element')->nullable();
             $table->string('reaction')->nullable();
+            $table->unsignedBigInteger('character_id')->nullable();
+            $table->foreign('character_id')
+                ->references('id')->on('characters')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -9,7 +9,7 @@ use App\Models\Perk;
 class PerkController extends Controller
 {
     public function index(Request $request) {
-        $perks = Perk::where('name', 'LIKE', '%'.$request->search.'%')->orWhere('description', 'LIKE', '%'.$request->search.'%')->get();
+        $perks = Perk::where('name', 'LIKE', '%'.$request->search.'%')->orWhere('description', 'LIKE', '%'.$request->search.'%')->orderBy('created_at', 'DESC')->get();
       
         return response()->json([
             'perks' => $perks,

@@ -8,7 +8,7 @@ use App\Models\Party;
 class PartyController extends Controller
 {
     public function index(Request $request) {
-        $parties = Party::with('positions.characters_value.character.perks.perk')->get();
+        $parties = Party::with('positions.characters_value.character.perks.perk')->with('character')->get();
         return response()->json([
             'parties' => $parties,
             'success' => true,
@@ -17,11 +17,24 @@ class PartyController extends Controller
     }
 
     public function show(Request $request, $id) {
-        $parties = Party::with('positions.characters_value.character.perks.perk')->where('id', $id)->get();
+        $parties = Party::with('positions.characters_value.character.perks.perk')->with('character')->where('id', $id)->get();
         return response()->json([
             'parties' => $parties,
             'success' => true,
             'message' => 'Party Fetched Successfully'
+        ], 200);
+    }
+
+
+    public function addPartyImage(Request $request) {
+        
+        $party = Party::where('id', $request->party_id)->update([
+            'character_id' => $request->character_id,
+        ]);
+        return response()->json([
+            'party' => $party,
+            'success' => true,
+            'message' => 'Party Image Added Successfully'
         ], 200);
     }
 

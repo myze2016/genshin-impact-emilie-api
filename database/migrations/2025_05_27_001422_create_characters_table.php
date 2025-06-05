@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('gacha_splash_url')->nullable();
             $table->string('icon_url')->nullable();
             $table->string('icon_side_url')->nullable();
-            $table->string('namecard-background_url')->nullable();
+            $table->string('namecard_background_url')->nullable();
             $table->string('api_id')->nullable();
             $table->timestamps();
         });
