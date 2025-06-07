@@ -19,7 +19,7 @@ class CharacterPerkController extends Controller
         return response()->json([
             'character_perks' => $perks,
             'success' => true,
-            'message' => 'Party Fetched Successfully'
+            'message' => 'Character Perk Fetched Successfully'
         ], 200);
     }
 

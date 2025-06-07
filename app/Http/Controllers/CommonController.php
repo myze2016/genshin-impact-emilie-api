@@ -18,10 +18,6 @@ class CommonController extends Controller
         ], 200);
     }
 
-    public function show(Request $request) {
-        
-    }
-
     public function store(Request $request) {
         try {
             $commonExist = Common::where('name', $request->name)->first();
@@ -41,17 +37,9 @@ class CommonController extends Controller
          } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to add perk',
-                'error' => $e->getMessage()
+                'message' => $e->getMessage(),
+                'error' => 500
             ], 500);
         }
-    }
-
-    public function update(Request $request) {
-        
-    }
-
-    public function destroy(Request $request) {
-        
     }
 }
