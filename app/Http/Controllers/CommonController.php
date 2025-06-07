@@ -10,7 +10,7 @@ use App\Models\Common;
 class CommonController extends Controller
 {
     public function index(Request $request) {
-        $commons = Common::where('name', 'LIKE', '%'.$request->search.'%')->get();
+        $commons = Common::where('name', 'LIKE', '%'.$request->search.'%')->orderBy('color')->get();
         return response()->json([
             'commons' => $commons,
             'success' => true,
@@ -33,6 +33,25 @@ class CommonController extends Controller
                 'common' => $common,
                 'success' => true,
                 'message' => 'Common Added Successfully'
+            ], 200);
+         } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'error' => 500
+            ], 500);
+        }
+    }
+
+
+    public function destroy(Request $request, $id) {
+        try {
+            $common = Common::where('id', $id)
+            ->delete();
+            return response()->json([
+                'common' => $common,
+                'success' => true,
+                'message' => 'Common Deleted Successfully'
             ], 200);
          } catch (\Exception $e) {
             return response()->json([

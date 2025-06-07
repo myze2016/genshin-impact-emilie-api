@@ -11,6 +11,7 @@ class Common extends Model
 
     protected $fillable = [
         'name',
+        'color',
         'created_at',
         'updated_at',
     ];

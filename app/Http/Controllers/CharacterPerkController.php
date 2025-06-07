@@ -10,12 +10,16 @@ use App\Models\Perk;
 class CharacterPerkController extends Controller
 {
     public function index(Request $request) {
-        $perks = Perk::with(['character_perks' => function ($query) use ($request) {
-            $query->where('character_id', $request->character_id)->get();
-        }])->where('name', 'LIKE', '%'.$request->search.'%')->get()->sortByDesc(function ($perk) {
-            return $perk->character_perks->isNotEmpty(); 
-        })
-        ->values();
+       $perks = Perk::with(['character_perks' => function ($query) use ($request) {
+            $query->where('character_id', $request->character_id);
+        }])
+        ->withCount(['character_perks as related_perks_count' => function ($query) use ($request) {
+            $query->where('character_id', $request->character_id);
+        }])
+        ->where('name', 'LIKE', '%' . $request->search . '%')
+        ->orderByDesc('related_perks_count')
+        ->paginate($request->rows_per_page ?? 10);
+
         return response()->json([
             'character_perks' => $perks,
             'success' => true,
