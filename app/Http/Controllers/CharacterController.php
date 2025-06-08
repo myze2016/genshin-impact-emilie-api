@@ -60,8 +60,22 @@ class CharacterController extends Controller
         
     }
 
-    public function destroy(Request $request) {
-        
+    public function destroy(Request $request,) {
+         try {
+            $character = Character::where('id', $id)
+            ->delete();
+            return response()->json([
+                'perk' => $character,
+                'success' => true,
+                'message' => 'Perk Deleted Successfully'
+            ], 200);
+         } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'error' => 500
+            ], 500);
+        }
     }
 
 

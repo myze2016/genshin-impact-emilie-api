@@ -34,7 +34,21 @@ class PartyPositionCharacterController extends Controller
         
     }
 
-    public function destroy(Request $request) {
-        
+    public function destroy(Request $request, $id) {
+         try {
+            $character = PartyPositionCharacter::where('id', $id)
+            ->delete();
+            return response()->json([
+                'perk' => $character,
+                'success' => true,
+                'message' => 'Character Deleted Successfully'
+            ], 200);
+         } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'error' => 500
+            ], 500);
+        }
     }
 }

@@ -43,7 +43,21 @@ class PerkController extends Controller
         
     }
 
-    public function destroy(Request $request) {
-        
+    public function destroy(Request $request, $id) {
+         try {
+            $perk = Perk::where('id', $id)
+            ->delete();
+            return response()->json([
+                'perk' => $perk,
+                'success' => true,
+                'message' => 'Perk Deleted Successfully'
+            ], 200);
+         } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'error' => 500
+            ], 500);
+        }
     }
 }
