@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('characters', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->string('element')->nullable();
+            $table->unsignedBigInteger('element_id')->nullable();
+            $table->foreign('element_id')
+                ->references('id')->on('elements')
+                ->onDelete('cascade');
             $table->string('gacha_card_url')->nullable();
             $table->string('gacha_splash_url')->nullable();
             $table->string('icon_url')->nullable();

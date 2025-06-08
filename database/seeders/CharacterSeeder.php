@@ -10,20 +10,18 @@ class CharacterSeeder extends Seeder
 {
     public function run(): void
     {
-          $characters = [
-            [
-                'name' => 'Diluc',
-                'element' => 'Pyro',
-            ],
-            [
-                'name' => 'Venti',
-                'element' => 'Anemo',
-            ],
-        ];
+        //   $characters = [
+        //     [
+        //         'name' => 'Diluc',
+        //     ],
+        //     [
+        //         'name' => 'Venti',
+        //     ],
+        // ];
 
-        // Insert into DB
-        foreach ($characters as $character) {
-            Character::create($character);
-        }
+        // // Insert into DB
+        // foreach ($characters as $character) {
+        //     Character::create($character);
+        // }
     }
 }

@@ -13,15 +13,15 @@ class PerkSeeder extends Seeder
      */
     public function run(): void
     {
-         $perks = [
-            [
-                'name' => 'Infusion Pyro',
-                'description' => 'Infusion Pyro',
-            ],
-        ];
+        //  $perks = [
+        //     [
+        //         'name' => 'Infusion Pyro',
+        //         'description' => 'Infusion Pyro',
+        //     ],
+        // ];
 
-        foreach ($perks as $perk) {
-            Perk::create($perk);
-        }
+        // foreach ($perks as $perk) {
+        //     Perk::create($perk);
+        // }
     }
 }

@@ -13,8 +13,11 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->string('description')->nullable();
-            $table->string('element')->nullable();
             $table->string('reaction')->nullable();
+            $table->unsignedBigInteger('element_id')->nullable();
+            $table->foreign('element_id')
+                ->references('id')->on('elements')
+                ->onDelete('cascade');
             $table->unsignedBigInteger('character_id')->nullable();
             $table->foreign('character_id')
                 ->references('id')->on('characters')

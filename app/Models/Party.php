@@ -12,7 +12,7 @@ class Party extends Model
     protected $fillable = [
         'name',
         'description',
-        'element',
+        'element_id',
         'reaction',
         'character_id',
         'created_at',
@@ -25,6 +25,11 @@ class Party extends Model
     }
 
     public function character()
+    {
+        return $this->belongsTo(character::class, 'character_id');
+    }
+
+    public function element()
     {
         return $this->belongsTo(character::class, 'character_id');
     }

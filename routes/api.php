@@ -9,6 +9,7 @@ use App\Http\Controllers\CharacterController;
 use App\Http\Controllers\PerkController;
 use App\Http\Controllers\CharacterPerkController;
 use App\Http\Controllers\CommonController;
+use App\Http\Controllers\ElementController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -29,6 +30,7 @@ Route::apiResource('party-position', PartyPositionController::class);
 Route::apiResource('party-position-character', PartyPositionCharacterController::class);
 Route::apiResource('character', CharacterController::class);
 Route::apiResource('perk', PerkController::class);
+Route::apiResource('elements', ElementController::class);
 Route::apiResource('character-perk', CharacterPerkController::class);
 Route::post('character-perk/delete-by-character', [CharacterPerkController::class, 'deletePerkByCharacter']);
 Route::post('character/create/api', [CharacterController::class, 'addCharacterApi']);

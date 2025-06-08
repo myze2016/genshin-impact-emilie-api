@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CharacterSeeder::class,
             PerkSeeder::class,
+            ElementSeeder::class,
         ]);
     }
 }

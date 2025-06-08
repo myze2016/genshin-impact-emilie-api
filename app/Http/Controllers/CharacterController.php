@@ -6,11 +6,14 @@ use Illuminate\Http\Request;
 use App\Models\Character;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Models\Element;
 
 class CharacterController extends Controller
 {
     public function index(Request $request) {
-        $characters = Character::where('name', 'LIKE', '%'.$request->search.'%')->orWhere('element', 'LIKE', '%'.$request->search.'%')->orWhereHas('perks', function ($q) use ($request) {
+        $characters = Character::with('element')->where('name', 'LIKE', '%'.$request->search.'%')->orWhereHas('element', function ($subQ1) use ($request) {
+                $subQ1->where('name', 'LIKE', '%' . $request->search . '%');
+            })->orWhereHas('perks', function ($q) use ($request) {
             $q->whereHas('perk', function ($subQ) use ($request) {
                 $subQ->where('name', 'LIKE', '%' . $request->search . '%')
                      ->orWhere('description', 'LIKE', '%' . $request->search . '%');
@@ -24,7 +27,7 @@ class CharacterController extends Controller
     }
 
     public function searchName(Request $request) {
-        $characters = Character::where('name', 'LIKE', '%'.$request->search.'%')->with('perks.perk')->paginate($request->rows_per_page ?? 10);
+        $characters = Character::with('element')->where('name', 'LIKE', '%'.$request->search.'%')->with('perks.perk')->paginate($request->rows_per_page ?? 10);
         return response()->json([
             'characters' => $characters,
             'success' => true,
@@ -75,10 +78,18 @@ class CharacterController extends Controller
                       
                     $characterExist = Character::where('name', $characterInfo['name'])->first();
                     $imgUrl = 'https://genshin.jmp.blue/characters/';
+                    $elements = Element::get();
                     if (!$characterExist) {
+                        $vision = strtolower($characterInfo['vision']);
+                        $matchedElement = $elements->first(function ($element) use ($vision) {
+                            return strtolower($element->name) === $vision;
+                        });
+
+                        $elementId = $matchedElement ? $matchedElement->id : null;
+
                         Character::create([
                             'name' => $characterInfo['name'],
-                            'element' => $characterInfo['vision'],
+                            'element_id' => $elementId,
                             'api_id' => $character,
                             'gacha_card_url' => $imgUrl.$character.'/gacha-card.png',
                             'gacha_splash_url' => $imgUrl.$character.'/gacha-splash.png',
@@ -91,6 +102,7 @@ class CharacterController extends Controller
             }
             
             return response()->json([
+                'elements' => $elements,
                 'success' => true,
                 'message' => 'Character Added Successfully'
             ], 200);

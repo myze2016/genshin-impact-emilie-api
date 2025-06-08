@@ -11,7 +11,7 @@ class Character extends Model
 
     protected $fillable = [
         'name',
-        'element',
+        'element_id',
         'api_id',
         'gacha_card_url',
         'gacha_splash_url',
@@ -25,5 +25,10 @@ class Character extends Model
     public function perks()
     {
         return $this->hasMany(CharacterPerk::class, 'character_id');
+    }
+
+    public function element()
+    {
+        return $this->belongsTo(Element::class);
     }
 }
