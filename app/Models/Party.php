@@ -26,11 +26,11 @@ class Party extends Model
 
     public function character()
     {
-        return $this->belongsTo(character::class, 'character_id');
+        return $this->belongsTo(Character::class, 'character_id');
     }
 
     public function element()
     {
-        return $this->belongsTo(character::class, 'character_id');
+        return $this->belongsTo(Element::class, 'character_id');
     }
 }

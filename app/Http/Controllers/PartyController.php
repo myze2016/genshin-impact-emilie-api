@@ -46,9 +46,17 @@ class PartyController extends Controller
             'message' => 'Party Added Successfully'
         ], 200);
     }
-
-    public function update(Request $request) {
-        
+    
+    public function update(Request $request)
+    {
+        $party = Party::where('id', $request->party_id)->update([
+            'character_id' => $request->character_id,
+        ]);
+        return response()->json([
+            'party' => $party,
+            'success' => true,
+            'message' => 'Party Image Added Successfully'
+        ], 200);
     }
 
     public function destroy(Request $request) {
