@@ -37,3 +37,4 @@ Route::post('character/create/api', [CharacterController::class, 'addCharacterAp
 Route::apiResource('common', CommonController::class);
 Route::get('character-get-by-name', [CharacterController::class, 'searchName']);
 Route::post('party-image', [PartyController::class, 'addPartyImage']);
+Route::post('arrange', [PartyPositionCharacterController::class, 'arrange']);

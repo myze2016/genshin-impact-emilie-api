@@ -34,7 +34,22 @@ class PartyPositionController extends Controller
         
     }
 
-    public function destroy(Request $request) {
-        
+    public function destroy(Request $request, $id) {
+        try {
+            $position = PartyPosition::where('id', $id)
+            ->delete();
+            return response()->json([
+                'position' => $position,
+                'success' => true,
+                'message' => 'Position Successfully'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'error' => 500
+            ], 500);
+        }
     }
+        
 }

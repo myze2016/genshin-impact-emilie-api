@@ -47,11 +47,9 @@ class PartyController extends Controller
         ], 200);
     }
     
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $party = Party::where('id', $request->party_id)->update([
-            'character_id' => $request->character_id,
-        ]);
+        $party = Party::where('id', $id)->update( $request->except(['id']) );
         return response()->json([
             'party' => $party,
             'success' => true,
