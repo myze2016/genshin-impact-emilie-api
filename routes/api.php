@@ -10,6 +10,8 @@ use App\Http\Controllers\PerkController;
 use App\Http\Controllers\CharacterPerkController;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\ElementController;
+use App\Http\Controllers\WeaponController;
+use App\Http\Controllers\WeaponPerkController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -26,6 +28,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('party', PartyController::class);
+Route::apiResource('weapon', WeaponController::class);
+Route::apiResource('weapon-perk', WeaponPerkController::class);
+Route::post('weapon/create/api', [WeaponController::class, 'addWeaponsApi']);
 Route::apiResource('party-position', PartyPositionController::class);
 Route::apiResource('party-position-character', PartyPositionCharacterController::class);
 Route::apiResource('character', CharacterController::class);
