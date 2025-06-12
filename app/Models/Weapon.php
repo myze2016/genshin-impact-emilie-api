@@ -11,6 +11,7 @@ class Weapon extends Model
 
     protected $fillable = [
         'name',
+        'weapon_type_id',
         'created_at',
         'updated_at',
     ];
@@ -18,5 +19,15 @@ class Weapon extends Model
     public function perks()
     {
         return $this->hasMany(WeaponPerk::class, 'weapon_id');
+    }
+
+    public function weapon_type()
+    {
+        return $this->belongsTo(WeaponType::class, 'weapon_type_id');
+    }
+
+     public function character_weapon()
+    {
+        return $this->hasMany(CharacterWeapon::class, 'weapon_id');
     }
 }

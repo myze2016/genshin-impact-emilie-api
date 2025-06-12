@@ -46,6 +46,18 @@ class WeaponPerkController extends Controller
         
     }
 
-    public function destroy(Request $request) {
+    public function destroy(Request $request, $id) {
+    
+    }
+
+     public function deleteWeaponPerkByPerk(Request $request) {
+        $weaponPerks = WeaponPerk::where('weapon_id', $request->weapon_id)
+            ->where('perk_id', $request->perk_id)
+            ->delete();
+        return response()->json([
+            'weapon_perks' => $weaponPerks,
+            'success' => true,
+            'message' => 'Perk Deleted Successfully'
+        ], 200);
     }
 }

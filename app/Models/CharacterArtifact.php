@@ -5,26 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ArtifactPerk extends Model
+class CharacterWeapon extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'character_id',
         'artifact_id',
-        'perk_id',
+        'points',
         'created_at',
         'updated_at',
     ];
 
-    
+    public function character()
+    {
+        return $this->belongsTo(Character::class, 'character_id');
+    }
+
     public function artifact()
     {
         return $this->belongsTo(Artifact::class, 'artifact_id');
     }
-
-    public function perk()
-    {
-        return $this->belongsTo(Perk::class, 'perk_id');
-    }
-   
 }

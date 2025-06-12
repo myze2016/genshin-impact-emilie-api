@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('weapons', function (Blueprint $table) {
+        Schema::create('weapon_types', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->unsignedBigInteger('weapon_type_id')->nullable();
-            $table->foreign('weapon_type_id')
-                ->references('id')->on('weapon_types')
-                ->onDelete('cascade');
+            $table->string('image_url')->nullable();
+            $table->string('color')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('weapons');
+        Schema::dropIfExists('weapon_types');
     }
 };

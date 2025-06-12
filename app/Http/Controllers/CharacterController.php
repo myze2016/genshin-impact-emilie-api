@@ -11,7 +11,7 @@ use App\Models\Element;
 class CharacterController extends Controller
 {
     public function index(Request $request) {
-        $characters = Character::with('element')->where('name', 'LIKE', '%'.$request->search.'%')->orWhereHas('element', function ($subQ1) use ($request) {
+        $characters = Character::with('element')->with('weapon_type')->where('name', 'LIKE', '%'.$request->search.'%')->orWhereHas('element', function ($subQ1) use ($request) {
                 $subQ1->where('name', 'LIKE', '%' . $request->search . '%');
             })->orWhereHas('perks', function ($q) use ($request) {
             $q->whereHas('perk', function ($subQ) use ($request) {
@@ -27,7 +27,7 @@ class CharacterController extends Controller
     }
 
     public function searchName(Request $request) {
-        $characters = Character::with('element')->where('name', 'LIKE', '%'.$request->search.'%')->with('perks.perk')->paginate($request->rows_per_page ?? 10);
+        $characters = Character::with('element')->where('name', 'LIKE', '%'.$request->search.'%')->with('weapon_type')->with('weapons.weapon.perks.perk')->with('perks.perk')->paginate($request->rows_per_page ?? 10);
         return response()->json([
             'characters' => $characters,
             'success' => true,

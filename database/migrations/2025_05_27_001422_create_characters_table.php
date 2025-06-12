@@ -18,6 +18,10 @@ return new class extends Migration
             $table->foreign('element_id')
                 ->references('id')->on('elements')
                 ->onDelete('cascade');
+             $table->unsignedBigInteger('weapon_type_id')->nullable();
+            $table->foreign('weapon_type_id')
+                ->references('id')->on('elements')
+                ->onDelete('cascade');
             $table->string('gacha_card_url')->nullable();
             $table->string('gacha_splash_url')->nullable();
             $table->string('icon_url')->nullable();

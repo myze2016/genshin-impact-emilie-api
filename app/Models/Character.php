@@ -15,6 +15,7 @@ class Character extends Model
         'api_id',
         'gacha_card_url',
         'gacha_splash_url',
+        'weapon_type_id',
         'icon_url',
         'icon_side_url',
         'namecard_background_url',
@@ -30,5 +31,20 @@ class Character extends Model
     public function element()
     {
         return $this->belongsTo(Element::class);
+    }
+
+    public function weapon_type()
+    {
+        return $this->belongsTo(WeaponType::class, 'weapon_type_id');
+    }
+
+     public function weapons()
+    {
+        return $this->hasMany(CharacterWeapon::class, 'character_id');
+    }
+
+    public function artifacts()
+    {
+        return $this->hasMany(CharacterArtifact::class, 'character_id');
     }
 }

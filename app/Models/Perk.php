@@ -30,4 +30,9 @@ class Perk extends Model
     {
         return $this->hasMany(WeaponPerk::class, 'perk_id');
     }
+
+    public function artifact_perks()
+    {
+        return $this->hasMany(ArtifactPerk::class, 'perk_id');
+    }
 }

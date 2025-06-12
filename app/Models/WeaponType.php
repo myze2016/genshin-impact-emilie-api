@@ -5,24 +5,27 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Artifact extends Model
+class WeaponType extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'name',
+        'image_url',
+        'color',
         'created_at',
         'updated_at',
     ];
 
-    public function perks()
+    public function weapon_type()
     {
-        return $this->hasMany(ArtifactPerk::class, 'artifact_id');
+        return $this->hasOne(Weapon::class, 'weapon_type_id');
     }
 
-    public function character_artifact()
+    
+      public function characters()
     {
-        return $this->hasMany(CharacterArtifact::class, 'artifact_id');
+        return $this->hasMany(Character::class);
     }
 
 }

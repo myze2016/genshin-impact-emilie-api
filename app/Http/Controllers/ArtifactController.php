@@ -7,52 +7,54 @@ use App\Models\Character;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Element;
+use App\Models\Artifact;
 
 class ArtifactController extends Controller
 {
-    public function index(Request $request) {
-        $characters = Character::with('element')->where('name', 'LIKE', '%'.$request->search.'%')->orWhereHas('element', function ($subQ1) use ($request) {
-                $subQ1->where('name', 'LIKE', '%' . $request->search . '%');
-            })->orWhereHas('perks', function ($q) use ($request) {
+     public function index(Request $request) {
+        $artifacts = Artifact::where('name', 'LIKE', '%'.$request->search.'%')->with('perks.perk')->paginate($request->rows_per_page ?? 10);
+        return response()->json([
+            'artifacts' => $artifacts,
+            'success' => true,
+            'message' => 'Artifacts Fetched Successfully'
+        ], 200);
+    }
+
+    public function searchByPerk(Request $request) {
+        $artifacts = Artifact::where('name', 'LIKE', '%'.$request->search.'%')->with(['character_artifact' => function ($query) use ($request) {
+            $query->where('character_id', $request->character_id);
+        }])->orWhereHas('perks', function ($q) use ($request) {
             $q->whereHas('perk', function ($subQ) use ($request) {
                 $subQ->where('name', 'LIKE', '%' . $request->search . '%')
                      ->orWhere('description', 'LIKE', '%' . $request->search . '%');
             });
         })->with('perks.perk')->paginate($request->rows_per_page ?? 10);
         return response()->json([
-            'characters' => $characters,
+            'artifacts' => $artifacts,
             'success' => true,
-            'message' => 'Character Fetched Successfully'
+            'message' => 'Artifacts Fetched Successfully'
         ], 200);
     }
-
-    public function searchName(Request $request) {
-        $characters = Character::with('element')->where('name', 'LIKE', '%'.$request->search.'%')->with('perks.perk')->paginate($request->rows_per_page ?? 10);
-        return response()->json([
-            'characters' => $characters,
-            'success' => true,
-            'message' => 'Character Fetched Successfully'
-        ], 200);
-    }
+    
 
     public function show(Request $request) {
         
     }
 
     public function store(Request $request) {
-        $characterExist = Character::where('name', $request->name)->first();
-        if ($characterExist) {
+        $artifactExist = Artifact::where('name', $request->name)->first();
+        if ($artifactExist) {
             return response()->json([
-                'characters' => $characterExist,
+                'artifacts' => $artifactExist,
                 'success' => true,
-                'message' => 'Character Exist'
+                'message' => 'Artifact Exist'
             ], 500);
         }
-        $characters = Character::create($request->all());
+        $artifact = Artifact::create($request->all());
         return response()->json([
-            'characters' => $characters,
+            'artifact' => $artifact,
             'success' => true,
-            'message' => 'Character Added Successfully'
+            'message' => 'Artifact Added Successfully'
         ], 200);
     }
 
@@ -62,12 +64,12 @@ class ArtifactController extends Controller
 
     public function destroy(Request $request,) {
          try {
-            $character = Character::where('id', $id)
+            $artifact = Artifact::where('id', $id)
             ->delete();
             return response()->json([
-                'perk' => $character,
+                'artifact' => $artifact,
                 'success' => true,
-                'message' => 'Perk Deleted Successfully'
+                'message' => 'Artifact Deleted Successfully'
             ], 200);
          } catch (\Exception $e) {
             return response()->json([
@@ -79,46 +81,31 @@ class ArtifactController extends Controller
     }
 
 
-    public function addCharacterApi(Request $request) {
+    public function addArtifactsApi(Request $request) {
         try {
-            $characters = Http::retry(3, 200)->get('https://genshin.jmp.blue/characters')->json();
-            foreach ($characters as $character) {
+            $artifacts = Http::retry(3, 200)->get('https://genshin.jmp.blue/artifacts')->json();
+            foreach ($artifacts as $artifact) {
                 
-                $apiIdExist = Character::where('api_id', $character)->first();
+                $apiIdExist = Artifact::where('api_id', $artifact)->first();
     
                 if (!$apiIdExist) {
                     
-                    $characterInfo = Http::retry(3, 200)->get('https://genshin.jmp.blue/characters/'.$character)->json();
+                    $artifactInfo = Http::retry(3, 200)->get('https://genshin.jmp.blue/artifacts/'.$artifact)->json();
                       
-                    $characterExist = Character::where('name', $characterInfo['name'])->first();
-                    $imgUrl = 'https://genshin.jmp.blue/characters/';
-                    $elements = Element::get();
-                    if (!$characterExist) {
-                        $vision = strtolower($characterInfo['vision']);
-                        $matchedElement = $elements->first(function ($element) use ($vision) {
-                            return strtolower($element->name) === $vision;
-                        });
-
-                        $elementId = $matchedElement ? $matchedElement->id : null;
-
-                        Character::create([
-                            'name' => $characterInfo['name'],
-                            'element_id' => $elementId,
-                            'api_id' => $character,
-                            'gacha_card_url' => $imgUrl.$character.'/gacha-card.png',
-                            'gacha_splash_url' => $imgUrl.$character.'/gacha-splash.png',
-                            'icon_url' => $imgUrl.$character.'/icon.png',
-                            'icon_side_url' => $imgUrl.$character.'/icon-side.png',
-                            'namecard_background_url' => $imgUrl.$character.'/namecard-background.png',
+                    $artifactExist = Artifact::where('name', $artifactInfo['name'])->first();
+                    $imgUrl = 'https://genshin.jmp.blue/artifacts/';
+                    if (!$artifactExist) {
+                        Artifact::create([
+                            'name' => $artifactInfo['name'],
                         ]);
                     } 
                 } 
             }
             
             return response()->json([
-                'elements' => $elements,
+                'artifactInfo' => $artifactInfo,
                 'success' => true,
-                'message' => 'Character Added Successfully'
+                'message' => 'Artifacts Added Successfully'
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

@@ -8,7 +8,11 @@ use App\Models\Party;
 class PartyController extends Controller
 {
     public function index(Request $request) {
-        $parties = Party::with('positions.characters_value.character.perks.perk')->with('element')->with('character.element')->get();
+        $parties = Party::with('positions.characters_value.character.perks.perk')->where('name', 'LIKE', '%'.$request->search.'%')->orWhere('reaction', 'LIKE', '%'.$request->search.'%')->orWhereHas('character', function ($subQ1) use ($request) {
+                $subQ1->where('name', 'LIKE', '%' . $request->search . '%');
+            })->orWhereHas('element', function ($subQ1) use ($request) {
+                $subQ1->where('name', 'LIKE', '%' . $request->search . '%');
+            })->with('element')->with('character.element')->paginate($request->rows_per_page ?? 10);
         return response()->json([
             'parties' => $parties,
             'success' => true,

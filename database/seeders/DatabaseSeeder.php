@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             CharacterSeeder::class,
             PerkSeeder::class,
             ElementSeeder::class,
+            WeaponTypeSeeder::class,
         ]);
     }
 }

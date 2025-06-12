@@ -11,7 +11,7 @@ use App\Models\Element;
 class WeaponController extends Controller
 {
     public function index(Request $request) {
-        $weapons = Weapon::where('name', 'LIKE', '%'.$request->search.'%')->with('perks.perk')->paginate($request->rows_per_page ?? 10);
+        $weapons = Weapon::where('name', 'LIKE', '%'.$request->search.'%')->with('weapon_type')->with('perks.perk')->paginate($request->rows_per_page ?? 10);
         return response()->json([
             'weapons' => $weapons,
             'success' => true,
@@ -20,7 +20,9 @@ class WeaponController extends Controller
     }
 
     public function searchByPerk(Request $request) {
-        $weapons = Weapon::where('name', 'LIKE', '%'.$request->search.'%')->orWhereHas('perks', function ($q) use ($request) {
+        $weapons = Weapon::where('name', 'LIKE', '%'.$request->search.'%')->with(['character_weapon' => function ($query) use ($request) {
+            $query->where('character_id', $request->character_id);
+        }])->with('weapon_type')->where('weapon_type_id', $request->weapon_type_id)->orWhereHas('perks', function ($q) use ($request) {
             $q->whereHas('perk', function ($subQ) use ($request) {
                 $subQ->where('name', 'LIKE', '%' . $request->search . '%')
                      ->orWhere('description', 'LIKE', '%' . $request->search . '%');
