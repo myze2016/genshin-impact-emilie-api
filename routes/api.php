@@ -16,6 +16,7 @@ use App\Http\Controllers\WeaponPerkController;
 use App\Http\Controllers\ArtifactController;
 use App\Http\Controllers\ArtifactPerkController;
 use App\Http\Controllers\CharacterWeaponController;
+use App\Http\Controllers\CharacterArtifactController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -55,3 +56,6 @@ Route::get('artifact-search', [ArtifactController::class, 'searchByPerk']);
 Route::post('weapon-perk/delete-by-perk', [WeaponPerkController::class, 'deleteWeaponPerkByPerk']);
 Route::apiResource('character-weapon', CharacterWeaponController::class);
 Route::post('character-weapon/delete-by-weapon', [CharacterWeaponController::class, 'deleteWeaponByCharacter']);
+Route::post('artifact-perk/delete-by-perk', [ArtifactPerkController::class, 'deleteAllPerkByArtifact']);
+Route::post('character-artifact/delete-by-artifact', [CharacterArtifactController::class, 'deleteArtifactByCharacter']);
+Route::apiResource('character-artifact', CharacterArtifactController::class);

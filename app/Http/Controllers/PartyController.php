@@ -21,7 +21,7 @@ class PartyController extends Controller
     }
 
     public function show(Request $request, $id) {
-        $parties = Party::with('positions.characters_value.character.perks.perk')->with('element')->with('character')->where('id', $id)->get();
+        $parties = Party::with('positions.characters_value.character.perks.perk')->with('positions.characters_value.character.weapons.weapon.perks.perk')->with('positions.characters_value.character.artifacts.artifact.perks.perk')->with('element')->with('character')->where('id', $id)->get();
         return response()->json([
             'parties' => $parties,
             'success' => true,

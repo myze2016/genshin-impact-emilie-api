@@ -11,6 +11,8 @@ use App\Models\Weapon;
 use App\Models\Artifact;
 use App\Models\ArtifactPerk;
 use Illuminate\Support\Facades\Log;
+use App\Models\CharacterArtifact;
+
 
 class ArtifactPerkController extends Controller
 {
@@ -51,5 +53,16 @@ class ArtifactPerkController extends Controller
     }
 
     public function destroy(Request $request) {
+    }
+
+         public function deleteAllPerkByArtifact(Request $request) {
+        $artifactPerk = ArtifactPerk::where('artifact_id', $request->artifact_id)
+            ->where('perk_id', $request->perk_id)
+            ->delete();
+        return response()->json([
+            'artifact_perk' => $artifactPerk,
+            'success' => true,
+            'message' => 'Perk Deleted Successfully'
+        ], 200);
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Element;
 use App\Models\Artifact;
+use App\Models\CharacterArtifact;
 
 class ArtifactController extends Controller
 {
