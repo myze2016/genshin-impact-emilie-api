@@ -17,6 +17,7 @@ use App\Http\Controllers\ArtifactController;
 use App\Http\Controllers\ArtifactPerkController;
 use App\Http\Controllers\CharacterWeaponController;
 use App\Http\Controllers\CharacterArtifactController;
+use App\Http\Controllers\AuthController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -32,7 +33,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('party', PartyController::class);
+// Route::apiResource('party', PartyController::class);
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+
+Route::middleware('auth:sanctum')->apiResource('party', PartyController::class);
 Route::apiResource('weapon', WeaponController::class);
 Route::apiResource('weapon-perk', WeaponPerkController::class);
 Route::apiResource('artifact', ArtifactController::class);
