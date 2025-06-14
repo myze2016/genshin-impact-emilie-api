@@ -14,6 +14,7 @@ class Party extends Model
         'description',
         'element_id',
         'reaction',
+        'copied_from_id',
         'character_id',
         'created_at',
         'updated_at',
@@ -31,6 +32,16 @@ class Party extends Model
 
     public function element()
     {
-        return $this->belongsTo(Element::class, 'character_id');
+        return $this->belongsTo(Element::class, 'element_id');
+    }
+
+    public function users()
+    {
+        return $this->hasMany(PartyUser::class, 'party_id');
+    }
+
+    public function copied_from()
+    {
+        return $this->belongsTo(Party::class, 'copied_from_id');
     }
 }

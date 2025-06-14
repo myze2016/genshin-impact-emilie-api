@@ -4,15 +4,60 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Party;
+use App\Models\PartyUser;
+use Illuminate\Support\Facades\Log;
 
 class PartyController extends Controller
 {
     public function index(Request $request) {
-        $parties = Party::with('positions.characters_value.character.perks.perk')->where('name', 'LIKE', '%'.$request->search.'%')->orWhere('reaction', 'LIKE', '%'.$request->search.'%')->orWhereHas('character', function ($subQ1) use ($request) {
-                $subQ1->where('name', 'LIKE', '%' . $request->search . '%');
-            })->orWhereHas('element', function ($subQ1) use ($request) {
-                $subQ1->where('name', 'LIKE', '%' . $request->search . '%');
-            })->with('element')->with('character.element')->paginate($request->rows_per_page ?? 10);
+       $parties = Party::with([
+            'positions.characters_value.character.perks.perk',
+            'users',
+            'element',
+            'character.element'
+        ])
+        ->doesntHave('users') // only get parties with NO users
+        ->where(function ($query) use ($request) {
+            $query->where('name', 'LIKE', '%' . $request->search . '%')
+                ->orWhere('reaction', 'LIKE', '%' . $request->search . '%')
+                ->orWhereHas('character', function ($q2) use ($request) {
+                    $q2->where('name', 'LIKE', '%' . $request->search . '%');
+                })
+                ->orWhereHas('element', function ($q3) use ($request) {
+                    $q3->where('name', 'LIKE', '%' . $request->search . '%');
+                });
+        })
+        ->paginate($request->rows_per_page ?? 10);
+        return response()->json([
+            'parties' => $parties,
+            'success' => true,
+            'message' => 'Party Fetched Successfully'
+        ], 200);
+    }
+
+    public function getPartiesUser(Request $request) {
+        Log::info('login', ['login' => auth('sanctum')->user()->id]);
+        $parties = Party::with([
+            'positions.characters_value.character.perks.perk',
+            'users',
+            'element',
+            'character.element',
+            'copied_from'
+        ])
+        ->whereHas('users', function ($q4) {
+            $q4->where('user_id', auth('sanctum')->id());
+        })
+        ->where(function ($query) use ($request) {
+            $query->where('name', 'LIKE', '%' . $request->search . '%')
+                ->orWhere('reaction', 'LIKE', '%' . $request->search . '%')
+                ->orWhereHas('character', function ($subQ1) use ($request) {
+                    $subQ1->where('name', 'LIKE', '%' . $request->search . '%');
+                })
+                ->orWhereHas('element', function ($subQ1) use ($request) {
+                    $subQ1->where('name', 'LIKE', '%' . $request->search . '%');
+                });
+        })
+        ->paginate($request->rows_per_page ?? 10);
         return response()->json([
             'parties' => $parties,
             'success' => true,
@@ -21,7 +66,7 @@ class PartyController extends Controller
     }
 
     public function show(Request $request, $id) {
-        $parties = Party::with('positions.characters_value.character.perks.perk')->with('positions.characters_value.character.weapons.weapon.perks.perk')->with('positions.characters_value.character.artifacts.artifact.perks.perk')->with('element')->with('character')->where('id', $id)->get();
+        $parties = Party::with('positions.characters_value.character.perks.perk')->with('copied_from')->with('positions.characters_value.character.weapons.weapon.perks.perk')->with('positions.characters_value.character.artifacts.artifact.perks.perk')->with('element')->with('character')->where('id', $id)->get();
         return response()->json([
             'parties' => $parties,
             'success' => true,
@@ -61,7 +106,62 @@ class PartyController extends Controller
         ], 200);
     }
 
-    public function destroy(Request $request) {
-        
+    public function destroy(Request $request, $id) {
+         try {
+            $party = Party::where('id', $id)
+            ->delete();
+            return response()->json([
+                'party' => $party,
+                'success' => true,
+                'message' => 'Party Deleted Successfully'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'error' => 500
+            ], 500);
+        }
     }
+
+    public function copyParty(Request $request)
+{
+    $originalParty = Party::with('positions.characters')->find($request->id);
+
+    if (!$originalParty) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Original party not found.'
+        ], 500);
+    }
+
+    $copiedParty = $originalParty->replicate();      
+    $copiedParty->copied_from_id = $originalParty->id; 
+    $copiedParty->save();
+
+    PartyUser::create([
+        'party_id' => $copiedParty->id,
+        'user_id' => auth('sanctum')->user()->id,
+    ]);
+
+    foreach ($originalParty->positions as $position) {
+        $copiedPosition = $position->replicate();
+        $copiedPosition->party_id = $copiedParty->id;
+        $copiedPosition->save();
+
+        // Copy characters (assuming this is a hasMany on Position)
+        foreach ($position->characters as $characterValue) {
+            $copiedCharacter = $characterValue->replicate();
+            $copiedCharacter->party_position_id = $copiedPosition->id;
+            $copiedCharacter->save();
+        }
+    }
+
+    return response()->json([
+        'party' => $copiedParty,
+        'success' => true,
+        'message' => 'Party copied successfully.'
+    ]);
+}
+    
 }

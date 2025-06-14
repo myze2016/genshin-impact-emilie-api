@@ -65,3 +65,5 @@ Route::post('character-weapon/delete-by-weapon', [CharacterWeaponController::cla
 Route::post('artifact-perk/delete-by-perk', [ArtifactPerkController::class, 'deleteAllPerkByArtifact']);
 Route::post('character-artifact/delete-by-artifact', [CharacterArtifactController::class, 'deleteArtifactByCharacter']);
 Route::apiResource('character-artifact', CharacterArtifactController::class);
+Route::post('party/copy-party', [PartyController::class, 'copyParty']);
+Route::middleware('auth:sanctum')->get('party-user', [PartyController::class, 'getPartiesUser']);
