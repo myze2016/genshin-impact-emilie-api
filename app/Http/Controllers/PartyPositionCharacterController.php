@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Party;
 use App\Models\PartyPositionCharacter;
 use Illuminate\Support\Facades\Log;
+use App\Models\PartyWeapon;
+use App\Models\PartyArtifact;
+use App\Models\Character;
 
 class PartyPositionCharacterController extends Controller
 {
@@ -27,9 +30,28 @@ class PartyPositionCharacterController extends Controller
          $recentCharacter = PartyPositionCharacter::orderBy('value', 'ASC')->first();
 
         $value = $recentCharacter ? $recentCharacter->value - 1 : 100;
-        Log::info('value', ['value' => $value]);
         $request->merge(['value' => $value]);
         $party_positions = PartyPositionCharacter::create($request->all());
+
+        $characterId = $request->character_id;
+        $character = Character::where('id', $characterId)->with('weapons')->with('artifacts')->first();
+        Log::info('character', ['character', $character]);
+
+        foreach ($character->artifacts as $artifact) {
+            $party_artifacts = PartyArtifact::create([
+                'artifact_id' => $artifact->artifact_id,
+                'party_character_id' => $party_positions->id, 
+            ]);
+        }
+
+        foreach ($character->weapons as $weapon) {
+              $party_weapons = PartyWeapon::create([
+                'weapon_id' => $weapon->weapon_id,
+                'party_character_id' => $party_positions->id, 
+            ]);
+        }
+
+
         return response()->json([
             'party_positions' => $party_positions,
             'success' => true,

@@ -21,6 +21,19 @@ class ArtifactController extends Controller
         ], 200);
     }
 
+      public function getArtifactUser(Request $request) {
+        $artifacts = Artifact::where('name', 'LIKE', '%'.$request->search.'%')->with('perks.perk')->with('party_artifact.party_character.party_position.party.users')
+        ->whereHas('party_artifact.party_character.party_position.party.users', function ($query) use ($request) {
+            $query->where('user_id', auth('sanctum')->user()->id);
+        })->paginate($request->rows_per_page ?? 10);
+        return response()->json([
+            'artifacts' => $artifacts,
+            'success' => true,
+            'message' => 'Artifacts Fetched Successfully'
+        ], 200);
+    }
+
+
     public function searchByPerk(Request $request) {
         $artifacts = Artifact::where('name', 'LIKE', '%'.$request->search.'%')->with(['character_artifact' => function ($query) use ($request) {
             $query->where('character_id', $request->character_id);

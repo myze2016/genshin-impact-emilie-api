@@ -67,3 +67,5 @@ Route::post('character-artifact/delete-by-artifact', [CharacterArtifactControlle
 Route::apiResource('character-artifact', CharacterArtifactController::class);
 Route::post('party/copy-party', [PartyController::class, 'copyParty']);
 Route::middleware('auth:sanctum')->get('party-user', [PartyController::class, 'getPartiesUser']);
+Route::middleware('auth:sanctum')->get('artifact-user', [ArtifactController::class, 'getArtifactUser']);
+Route::middleware('auth:sanctum')->get('character-artifact-user', [CharacterController::class, 'getCharacterArtitactUser']);

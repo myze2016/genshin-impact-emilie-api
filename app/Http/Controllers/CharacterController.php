@@ -7,6 +7,7 @@ use App\Models\Character;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Element;
+use App\Models\PartyPositionCharacter;
 
 class CharacterController extends Controller
 {
@@ -48,6 +49,21 @@ class CharacterController extends Controller
         $characters = Character::with('element')->where('name', 'LIKE', '%'.$request->search.'%')->with('weapon_type')->with('weapons.weapon.perks.perk')->with('artifacts.artifact.perks.perk')->with('perks.perk')->paginate($request->rows_per_page ?? 10);
         return response()->json([
             'characters' => $characters,
+            'success' => true,
+            'message' => 'Character Fetched Successfully'
+        ], 200);
+    }
+
+
+      public function getCharacterArtitactUser(Request $request) {
+        $characters = PartyPositionCharacter::with('party_position.party.users')->with('party_weapon.weapon')->with('party_artifact')->whereHas('party_artifact', function($q) use ($request) {
+            $q->where('artifact_id', $request->artifact_id);
+        })->whereHas('party_position.party.users', function($q) use ($request) {
+            $q->where('user_id', auth('sanctum')->id());
+        })->with('character.element')->with('character.perks.perk')->paginate($request->rows_per_page ?? 10);
+        return response()->json([
+            'characters' => $characters,
+            'id' => $request->artifact_id,
             'success' => true,
             'message' => 'Character Fetched Successfully'
         ], 200);

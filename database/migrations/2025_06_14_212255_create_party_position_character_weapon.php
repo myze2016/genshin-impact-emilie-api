@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('party_artifact', function (Blueprint $table) {
+        Schema::create('party_weapon', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('party_character_id')->nullable();
             $table->foreign('party_character_id')
                 ->references('id')->on('party_position_characters')
                 ->onDelete('cascade');
-            $table->unsignedBigInteger('artifact_id')->nullable();
-            $table->foreign('artifact_id')
-                ->references('id')->on('artifacts')
+            $table->unsignedBigInteger('weapon_id')->nullable();
+            $table->foreign('weapon_id')
+                ->references('id')->on('weapons')
                 ->onDelete('cascade');
             $table->timestamps();
         });
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('party_artifact');
+        Schema::dropIfExists('party_weapon');
     }
 };

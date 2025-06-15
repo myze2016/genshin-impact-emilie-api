@@ -19,7 +19,7 @@ class PartyPosition extends Model
 
     public function party()
     {
-        return $this->belongsTo(Party::class, 'id', 'party_id');
+        return $this->belongsTo(Party::class, 'party_id');
     }
 
     public function characters()

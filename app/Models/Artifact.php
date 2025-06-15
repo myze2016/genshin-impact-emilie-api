@@ -25,4 +25,9 @@ class Artifact extends Model
         return $this->hasMany(CharacterArtifact::class, 'artifact_id');
     }
 
+    public function party_artifact()
+    {
+        return $this->hasMany(PartyArtifact::class, 'artifact_id');
+    }
+
 }
