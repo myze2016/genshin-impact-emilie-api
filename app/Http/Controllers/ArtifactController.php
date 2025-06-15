@@ -49,6 +49,23 @@ class ArtifactController extends Controller
             'message' => 'Artifacts Fetched Successfully'
         ], 200);
     }
+
+
+    public function getArtifactByParty(Request $request) {
+        $artifacts = Artifact::where('name', 'LIKE', '%'.$request->search.'%')->with('character_artifact')->with(['party_artifact' => function ($query) use ($request) {
+            $query->where('party_character_id', $request->party_character_id);
+        }])->orWhereHas('perks', function ($q) use ($request) {
+            $q->whereHas('perk', function ($subQ) use ($request) {
+                $subQ->where('name', 'LIKE', '%' . $request->search . '%')
+                     ->orWhere('description', 'LIKE', '%' . $request->search . '%');
+            });
+        })->with('perks.perk')->paginate($request->rows_per_page ?? 10);
+        return response()->json([
+            'artifacts' => $artifacts,
+            'success' => true,
+            'message' => 'Artifacts Fetched Successfully'
+        ], 200);
+    }
     
 
     public function show(Request $request) {

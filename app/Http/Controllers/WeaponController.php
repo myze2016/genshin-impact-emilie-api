@@ -35,6 +35,22 @@ class WeaponController extends Controller
         ], 200);
     }
 
+     public function getWeaponByParty(Request $request) {
+        $weapons = Weapon::where('name', 'LIKE', '%'.$request->search.'%')->with('character_weapon')->with(['party_weapon' => function ($query) use ($request) {
+            $query->where('party_character_id', $request->party_character_id);
+        }])->with('weapon_type')->where('weapon_type_id', $request->weapon_type_id)->orWhereHas('perks', function ($q) use ($request) {
+            $q->whereHas('perk', function ($subQ) use ($request) {
+                $subQ->where('name', 'LIKE', '%' . $request->search . '%')
+                     ->orWhere('description', 'LIKE', '%' . $request->search . '%');
+            });
+        })->with('perks.perk')->paginate($request->rows_per_page ?? 10);
+        return response()->json([
+            'weapons' => $weapons,
+            'success' => true,
+            'message' => 'Weapon Fetched Successfully'
+        ], 200);
+    }
+
     public function show(Request $request) {
         
     }

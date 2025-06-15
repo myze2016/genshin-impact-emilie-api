@@ -30,4 +30,9 @@ class Weapon extends Model
     {
         return $this->hasMany(CharacterWeapon::class, 'weapon_id');
     }
+
+      public function party_weapon()
+    {
+        return $this->hasMany(PartyWeapon::class, 'weapon_id');
+    }
 }

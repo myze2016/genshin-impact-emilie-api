@@ -18,6 +18,8 @@ use App\Http\Controllers\ArtifactPerkController;
 use App\Http\Controllers\CharacterWeaponController;
 use App\Http\Controllers\CharacterArtifactController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PartyWeaponController;
+use App\Http\Controllers\PartyArtifactController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -69,3 +71,11 @@ Route::post('party/copy-party', [PartyController::class, 'copyParty']);
 Route::middleware('auth:sanctum')->get('party-user', [PartyController::class, 'getPartiesUser']);
 Route::middleware('auth:sanctum')->get('artifact-user', [ArtifactController::class, 'getArtifactUser']);
 Route::middleware('auth:sanctum')->get('character-artifact-user', [CharacterController::class, 'getCharacterArtitactUser']);
+Route::middleware('auth:sanctum')->apiResource('party-artifact', PartyArtifactController::class);
+Route::middleware('auth:sanctum')->apiResource('party-weapon', PartyWeaponController::class);
+Route::get('artifact-by-party', [ArtifactController::class, 'getArtifactByParty']);
+Route::get('weapon-by-party', [WeaponController::class, 'getWeaponByParty']);
+
+Route::post('party-weapon/delete', [PartyWeaponController::class, 'deleteWeaponByPartyCharacterId']);
+Route::post('party-artifact/delete', [PartyArtifactController::class, 'deleteArtifactByPartyCharacterId']);
+
