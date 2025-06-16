@@ -128,6 +128,7 @@ class ArtifactController extends Controller
                     if (!$artifactExist) {
                         Artifact::create([
                             'name' => $artifactInfo['name'],
+                            'api_id' => $artifact
                         ]);
                     } 
                 } 

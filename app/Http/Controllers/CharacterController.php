@@ -116,17 +116,24 @@ class CharacterController extends Controller
     public function addCharacterApi(Request $request) {
         try {
             $characters = Http::retry(3, 200)->get('https://genshin.jmp.blue/characters')->json();
-            foreach ($characters as $character) {
+            $elements = Element::get();
+            $characterApis = Character::get();
+            $characterCount = Character::whereNotNull('api_id')->count();
+            $characterCollect = collect($characters);
+            $remainingCharacters = $characterCollect->slice($characterCount)->values();
+            foreach ($remainingCharacters as $character) {
                 
-                $apiIdExist = Character::where('api_id', $character)->first();
-    
-                if (!$apiIdExist) {
+                $matchedApi = $characterApis->first(function ($characterApi) use ($character) {
+                    return strtolower($characterApi->api_id) === $character;
+                });
+
+                if (!$matchedApi) {
                     
                     $characterInfo = Http::retry(3, 200)->get('https://genshin.jmp.blue/characters/'.$character)->json();
                       
                     $characterExist = Character::where('name', $characterInfo['name'])->first();
                     $imgUrl = 'https://genshin.jmp.blue/characters/';
-                    $elements = Element::get();
+                  
                     if (!$characterExist) {
                         $vision = strtolower($characterInfo['vision']);
                         $matchedElement = $elements->first(function ($element) use ($vision) {

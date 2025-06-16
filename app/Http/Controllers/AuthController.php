@@ -18,7 +18,7 @@ class AuthController extends Controller
         $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed', // Requires password_confirmation field
+            'password' => 'required|string|min:6', // Requires password_confirmation field
         ]);
 
         $user = User::create([
@@ -31,6 +31,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Registered successfully',
+            'success' => true,
             'token'   => $token,
             'user'    => $user,
         ]);
@@ -57,6 +58,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Login successful',
+            'success' => true,
             'token'   => $token,
             'user'    => $user,
         ]);

@@ -12,6 +12,7 @@ class Weapon extends Model
     protected $fillable = [
         'name',
         'weapon_type_id',
+        'api_id',
         'created_at',
         'updated_at',
     ];

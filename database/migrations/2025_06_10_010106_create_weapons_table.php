@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('weapons', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
+            $table->string('api_id')->nullable();
             $table->unsignedBigInteger('weapon_type_id')->nullable();
             $table->foreign('weapon_type_id')
                 ->references('id')->on('weapon_types')

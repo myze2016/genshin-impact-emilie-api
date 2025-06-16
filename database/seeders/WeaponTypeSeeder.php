@@ -23,7 +23,7 @@ class WeaponTypeSeeder extends Seeder
                 'color' => '#7a6652'
             ],
             [
-                'name' => 'Greatsword',
+                'name' => 'Claymore',
                 'color' => '#5e4b8b'
             ],
             [

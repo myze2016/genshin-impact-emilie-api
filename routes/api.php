@@ -79,3 +79,5 @@ Route::get('weapon-by-party', [WeaponController::class, 'getWeaponByParty']);
 Route::post('party-weapon/delete', [PartyWeaponController::class, 'deleteWeaponByPartyCharacterId']);
 Route::post('party-artifact/delete', [PartyArtifactController::class, 'deleteArtifactByPartyCharacterId']);
 
+Route::post('artifact/create/api', [ArtifactController::class, 'addArtifactsApi']);
+Route::post('weapon/create/api', [WeaponController::class, 'addWeaponsApi']);

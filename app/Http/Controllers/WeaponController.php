@@ -7,6 +7,7 @@ use App\Models\Weapon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Element;
+use App\Models\WeaponType;
 
 class WeaponController extends Controller
 {
@@ -98,26 +99,40 @@ class WeaponController extends Controller
     public function addWeaponsApi(Request $request) {
         try {
             $weapons = Http::retry(3, 200)->get('https://genshin.jmp.blue/weapons')->json();
-            foreach ($weapons as $weapon) {
-                
-                $apiIdExist = Weapon::where('api_id', $weapon)->first();
-    
-                if (!$apiIdExist) {
-                    
+            $weaponTypes = WeaponType::get();
+            $weaponApis = Weapon::get();
+            $weaponCount = Weapon::whereNotNull('api_id')->count();
+            $weaponsCollect = collect($weapons);
+            $remainingWeapons = $weaponsCollect->slice($weaponCount)->values();
+            foreach ($remainingWeapons as $weapon) {
+                $matchedApi = $weaponApis->first(function ($weaponApi) use ($weapon) {
+                        return strtolower($weaponApi->api_id) === $weapon;
+                    });
+                if (!$matchedApi) {
                     $weaponInfo = Http::retry(3, 200)->get('https://genshin.jmp.blue/weapons/'.$weapon)->json();
-                      
                     $weaponExist = Weapon::where('name', $weaponInfo['name'])->first();
                     $imgUrl = 'https://genshin.jmp.blue/weapons/';
+                
                     if (!$weaponExist) {
+                        $type = strtolower($weaponInfo['type']);
+                        $matchedType = $weaponTypes->first(function ($weaponType) use ($type) {
+                            return strtolower($weaponType->name) === $type;
+                        });
+
+                        $weaponTypeId = $matchedType ? $matchedType->id : null;
+
+
                         Weapon::create([
                             'name' => $weaponInfo['name'],
+                            'api_id' => $weapon,
+                            'weapon_type_id' => $weaponTypeId,
                         ]);
                     } 
                 } 
+                
             }
             
             return response()->json([
-                'weaponInfo' => $weaponInfo,
                 'success' => true,
                 'message' => 'Weapons Added Successfully'
             ], 200);
