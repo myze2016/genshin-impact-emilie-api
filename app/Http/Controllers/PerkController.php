@@ -27,7 +27,7 @@ class PerkController extends Controller
             $exists = Perk::where('name', $request->name)->first();
 
             if ($exists) {
-                return response()->json(['error' => 'Perk with this name already exists.'], 500);
+                return response()->json(['error' => true, 'message' => 'Perk with this name already exists.'], 500);
             }
             $perks = Perk::create($request->all());
             return response()->json([
