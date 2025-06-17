@@ -163,5 +163,55 @@ class PartyController extends Controller
         'message' => 'Party copied successfully.'
     ]);
 }
+
+    public function refetchAbyss(Request $request) {
+
+        $perkNames = collect($request->perks)->pluck('name')->toArray();
+        if ($request->select === 'party') {
+            Log::info('perkNames', ['perkNames' => $perkNames]);
+            $parties = Party::with([
+                'positions.characters_value.character.perks.perk',
+                'users',
+                'element',
+                'character.element'
+            ])
+            ->doesntHave('users') 
+            ->where('reaction', 'LIKE', '%' . $request->reaction . '%')
+            ->where('element_id', 'LIKE', '%' . $request->element_id . '%')
+            ->whereHas('positions.characters_value.character.perks.perk', function ($q2) use ($perkNames) {            
+                $q2->whereIn('name', $perkNames);
+            })
+            ->paginate($request->rows_per_page ?? 10);
+            return response()->json([
+                'data' => $parties,
+                'success' => true,
+                'message' => 'Party Fetched Successfully'
+            ], 200);
+        } else {
+            $parties = Party::with([
+                'positions.characters_value.character.perks.perk',
+                'users',
+                'element',
+                'character.element'
+            ])
+            ->whereHas('users', function ($q4) {
+                $q4->where('user_id', auth('sanctum')->id());
+            })
+            ->where('reaction', 'LIKE', '%' . $request->reaction . '%')
+            ->where('element_id', 'LIKE', '%' . $request->element_id . '%')
+            ->where(function ($query) use ($perkNames) {
+                $query
+                ->whereHas('positions.characters_value.character.perks.perk', function ($q2) use ($perkNames) {            
+                    $q2->whereIn('name', $perkNames);
+                });
+            })
+            ->paginate($request->rows_per_page ?? 10);
+            return response()->json([
+                'data' => $parties,
+                'success' => true,
+                'message' => 'Party Fetched Successfully'
+            ], 200);
+        }
+    }
     
 }
