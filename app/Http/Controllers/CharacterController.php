@@ -7,6 +7,7 @@ use App\Models\Character;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Element;
+use App\Models\WeaponType;
 use App\Models\PartyPositionCharacter;
 
 class CharacterController extends Controller
@@ -117,6 +118,7 @@ class CharacterController extends Controller
         try {
             $characters = Http::retry(3, 200)->get('https://genshin.jmp.blue/characters')->json();
             $elements = Element::get();
+            $weaponTypes = WeaponType::get();
             $characterApis = Character::get();
             $characterCount = Character::whereNotNull('api_id')->count();
             $characterCollect = collect($characters);
@@ -142,9 +144,17 @@ class CharacterController extends Controller
 
                         $elementId = $matchedElement ? $matchedElement->id : null;
 
+                        $weapon = strtolower($characterInfo['weapon']);
+                        $matchedWeapon = $weaponTypes->first(function ($weaponType) use ($weapon) {
+                            return strtolower($weaponType->name) === $weapon;
+                        });
+
+                        $weaponTypeId = $matchedWeapon ? $matchedWeapon->id : null;
+
                         Character::create([
                             'name' => $characterInfo['name'],
                             'element_id' => $elementId,
+                            'weapon_type_id' => $weaponTypeId,
                             'api_id' => $character,
                             'gacha_card_url' => $imgUrl.$character.'/gacha-card.png',
                             'gacha_splash_url' => $imgUrl.$character.'/gacha-splash.png',
@@ -168,4 +178,5 @@ class CharacterController extends Controller
             ], 500);
         }
     }
+
 }

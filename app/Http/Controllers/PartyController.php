@@ -126,7 +126,7 @@ class PartyController extends Controller
 
     public function copyParty(Request $request)
 {
-    $originalParty = Party::with('positions.characters')->find($request->id);
+    $originalParty = Party::with('positions.characters')->with('positions.characters.party_weapon')->with('positions.characters.party_artifact')->find($request->id);
 
     if (!$originalParty) {
         return response()->json([
@@ -154,6 +154,19 @@ class PartyController extends Controller
             $copiedCharacter = $characterValue->replicate();
             $copiedCharacter->party_position_id = $copiedPosition->id;
             $copiedCharacter->save();
+
+            foreach ($characterValue->party_weapon as $weapon) {
+                $copiedWeapon = $weapon->replicate();
+                $copiedWeapon->party_character_id = $copiedCharacter->id;
+                $copiedWeapon->save();
+            }
+            
+            foreach ($characterValue->party_artifact as $artifact) {
+                $copiedArtifact = $artifact->replicate();
+                $copiedArtifact->party_character_id = $copiedCharacter->id;
+                $copiedArtifact->save();
+            }
+            
         }
     }
 
@@ -178,8 +191,10 @@ class PartyController extends Controller
             ->doesntHave('users') 
             ->where('reaction', 'LIKE', '%' . $request->reaction . '%')
             ->where('element_id', 'LIKE', '%' . $request->element_id . '%')
-            ->whereHas('positions.characters_value.character.perks.perk', function ($q2) use ($perkNames) {            
-                $q2->whereIn('name', $perkNames);
+            ->when($perkNames, function ($query) use ($perkNames) {
+                $query->whereHas('positions.characters_value.character.perks.perk', function ($q2) use ($perkNames) {            
+                    $q2->whereIn('name', $perkNames);
+                });
             })
             ->paginate($request->rows_per_page ?? 10);
             return response()->json([
@@ -199,9 +214,8 @@ class PartyController extends Controller
             })
             ->where('reaction', 'LIKE', '%' . $request->reaction . '%')
             ->where('element_id', 'LIKE', '%' . $request->element_id . '%')
-            ->where(function ($query) use ($perkNames) {
-                $query
-                ->whereHas('positions.characters_value.character.perks.perk', function ($q2) use ($perkNames) {            
+            ->when($perkNames, function ($query) use ($perkNames) {
+                $query->whereHas('positions.characters_value.character.perks.perk', function ($q2) use ($perkNames) {            
                     $q2->whereIn('name', $perkNames);
                 });
             })

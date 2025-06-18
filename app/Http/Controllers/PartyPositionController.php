@@ -30,8 +30,13 @@ class PartyPositionController extends Controller
         ], 200);
     }
 
-    public function update(Request $request) {
-        
+    public function update(Request $request,$id) {
+        $party_positions = PartyPosition::where('id', $id)->update( $request->all() );
+        return response()->json([
+            'party_positions' => $party_positions,
+            'success' => true,
+            'message' => 'Party Image Position Successfully'
+        ], 200);
     }
 
     public function destroy(Request $request, $id) {
