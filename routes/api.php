@@ -22,6 +22,7 @@ use App\Http\Controllers\PartyWeaponController;
 use App\Http\Controllers\PartyArtifactController;
 use App\Http\Controllers\StatController;
 use App\Http\Controllers\StatLineController;
+use App\Http\Controllers\PartyArtifactPieceController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -54,6 +55,7 @@ Route::apiResource('character', CharacterController::class);
 Route::apiResource('perk', PerkController::class);
 Route::apiResource('stat', StatController::class);
 Route::apiResource('stat-line', StatLineController::class);
+Route::apiResource('artifact-piece', PartyArtifactPieceController::class);
 Route::apiResource('elements', ElementController::class);
 Route::apiResource('weapon-types', WeaponTypeController::class);
 Route::apiResource('character-perk', CharacterPerkController::class);

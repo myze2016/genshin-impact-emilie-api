@@ -33,5 +33,10 @@ class PartyArtifact extends Model
     {
         return $this->hasMany(StatLine::class, 'party_artifact_id', 'id');
     }
+
+     public function party_artifact_piece()
+    {
+        return $this->hasMany(PartyArtifactPiece::class, 'party_artifact_id', 'id');
+    }
    
 }

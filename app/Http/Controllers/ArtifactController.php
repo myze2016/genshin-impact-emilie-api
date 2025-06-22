@@ -55,7 +55,7 @@ class ArtifactController extends Controller
         $artifacts = Artifact::withCount(['party_artifact' => function ($query) use ($request) {
         $query->where('party_character_id', $request->party_character_id);
     }])->where('name', 'LIKE', '%'.$request->search.'%')->with('character_artifact')->with(['party_artifact' => function ($query) use ($request) {
-            $query->with(['stat_line.sands_stat', 'stat_line.goblet_stat', 'stat_line.circlet_stat', 'stat_line.sub_stat.stat'])->where('party_character_id', $request->party_character_id);
+            $query->with(['stat_line.sands_stat', 'stat_line.goblet_stat', 'stat_line.circlet_stat', 'stat_line.sub_stat.stat', 'party_artifact_piece.stat'])->where('party_character_id', $request->party_character_id);
         }])->orWhereHas('perks', function ($q) use ($request) {
             $q->whereHas('perk', function ($subQ) use ($request) {
                 $subQ->where('name', 'LIKE', '%' . $request->search . '%')
