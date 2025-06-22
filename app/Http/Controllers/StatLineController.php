@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Party;
 use App\Models\Perk;
 use App\Models\Stat;
+use App\Models\StatLine;
+use App\Models\StatLineSubstat;
+use Illuminate\Support\Facades\Log;
 
 class StatLineController extends Controller
 {
@@ -26,7 +29,15 @@ class StatLineController extends Controller
     public function store(Request $request) {
         try {
             
-            $stat_lines = [];
+            
+            $stat_lines = StatLine::create($request->except(['substat']));
+
+            foreach ($request->substat as $statId) {
+                StatLineSubstat::create([
+                    'stat_line_id' => $stat_lines->id,
+                    'stat_id' => $statId,
+                ]);
+            }
             return response()->json([
                 'stat_lines' => $stat_lines,
                 'requests' => $request,

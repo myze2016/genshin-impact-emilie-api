@@ -10,20 +10,20 @@ class StatLineSubstat extends Model
     use HasFactory;
 
     protected $fillable = [
+        'stat_line_id',
         'stat_id',
-        'party_artifact_id',
         'created_at',
         'updated_at',
     ];
 
+    public function stat_line()
+    {
+        return $this->belongsTo(StatLine::class, 'stat_line_id');
+    }
+
     public function stat()
     {
         return $this->belongsTo(Stat::class, 'stat_id');
-    }
-
-    public function party_artifact()
-    {
-        return $this->belongsTo(PartyArtifact::class, 'party_artifact_id');
     }
 
 }

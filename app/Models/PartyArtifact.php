@@ -28,5 +28,10 @@ class PartyArtifact extends Model
     {
         return $this->belongsTo(PartyPositionCharacter::class, 'party_character_id');
     }
+
+     public function stat_line()
+    {
+        return $this->hasMany(StatLine::class, 'party_artifact_id', 'id');
+    }
    
 }

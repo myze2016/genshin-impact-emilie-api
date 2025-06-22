@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('stat_line_substats', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('party_artifact_id')->nullable();
-            $table->foreign('party_artifact_id')
-                ->references('id')->on('party_artifact')
+            $table->unsignedBigInteger('stat_line_id')->nullable();
+            $table->foreign('stat_line_id')
+                ->references('id')->on('stat_lines')
                 ->onDelete('cascade');
             $table->unsignedBigInteger('stat_id')->nullable();
             $table->foreign('stat_id')

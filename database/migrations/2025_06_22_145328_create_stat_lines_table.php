@@ -13,14 +13,20 @@ return new class extends Migration
     {
         Schema::create('stat_lines', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->string('description')->nullable();
             $table->unsignedBigInteger('party_artifact_id')->nullable();
             $table->foreign('party_artifact_id')
                 ->references('id')->on('party_artifact')
                 ->onDelete('cascade');
-            $table->unsignedBigInteger('stat_id')->nullable();
-            $table->foreign('stat_id')
+            $table->unsignedBigInteger('sands')->nullable();
+            $table->foreign('sands')
+                ->references('id')->on('stats')
+                ->onDelete('cascade');
+            $table->unsignedBigInteger('goblet')->nullable();
+            $table->foreign('goblet')
+                ->references('id')->on('stats')
+                ->onDelete('cascade');
+            $table->unsignedBigInteger('circlet')->nullable();
+            $table->foreign('circlet')
                 ->references('id')->on('stats')
                 ->onDelete('cascade');
             $table->timestamps();
