@@ -20,6 +20,8 @@ use App\Http\Controllers\CharacterArtifactController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PartyWeaponController;
 use App\Http\Controllers\PartyArtifactController;
+use App\Http\Controllers\StatController;
+use App\Http\Controllers\StatLineController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -50,6 +52,8 @@ Route::apiResource('party-position', PartyPositionController::class);
 Route::apiResource('party-position-character', PartyPositionCharacterController::class);
 Route::apiResource('character', CharacterController::class);
 Route::apiResource('perk', PerkController::class);
+Route::apiResource('stat', StatController::class);
+Route::apiResource('stat-line', StatLineController::class);
 Route::apiResource('elements', ElementController::class);
 Route::apiResource('weapon-types', WeaponTypeController::class);
 Route::apiResource('character-perk', CharacterPerkController::class);

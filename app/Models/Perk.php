@@ -12,6 +12,7 @@ class Perk extends Model
     protected $fillable = [
         'name',
         'description',
+        'type',
         'created_at',
         'updated_at',
     ];
