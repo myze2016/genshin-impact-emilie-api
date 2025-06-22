@@ -165,6 +165,12 @@ class PartyController extends Controller
                 $copiedArtifact = $artifact->replicate();
                 $copiedArtifact->party_character_id = $copiedCharacter->id;
                 $copiedArtifact->save();
+                
+                foreach ($artifact->party_artifact_piece as $piece) {
+                    $copiedPiece = $piece->replicate();
+                    $copiedPiece->party_artifact_id = $copiedArtifact->id;
+                    $copiedPiece->save();
+                }
             }
             
         }
