@@ -12,6 +12,7 @@ class Perk extends Model
     protected $fillable = [
         'name',
         'description',
+        'common_id',
         'type',
         'created_at',
         'updated_at',
@@ -30,6 +31,11 @@ class Perk extends Model
     public function weapon_perks()
     {
         return $this->hasMany(WeaponPerk::class, 'perk_id');
+    }
+
+    public function common()
+    {
+        return $this->belongsTo(Common::class, 'common_id');
     }
 
     public function artifact_perks()

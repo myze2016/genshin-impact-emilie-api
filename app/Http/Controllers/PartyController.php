@@ -11,7 +11,7 @@ class PartyController extends Controller
 {
     public function index(Request $request) {
        $parties = Party::with([
-            'positions.characters_value.character.perks.perk',
+            'positions.characters_value.character.perks.perk.common',
             'users',
             'element',
             'character.element'
@@ -38,7 +38,7 @@ class PartyController extends Controller
     public function getPartiesUser(Request $request) {
         Log::info('login', ['login' => auth('sanctum')->user()->id]);
         $parties = Party::with([
-            'positions.characters_value.character.perks.perk',
+            'positions.characters_value.character.perks.perk.common',
             'users',
             'element',
             'character.element',
@@ -66,7 +66,7 @@ class PartyController extends Controller
     }
 
     public function show(Request $request, $id) {
-        $parties = Party::with('positions.characters_value.character.perks.perk')->with('copied_from')->with('positions.characters_value.party_weapon.weapon.perks.perk')->with('positions.characters_value.party_artifact.artifact.perks.perk')->with('positions.characters_value.character.weapons.weapon.perks.perk')->with('positions.characters_value.character.artifacts.artifact.perks.perk')->with('element')->with('character')->where('id', $id)->get();
+        $parties = Party::with('positions.characters_value.character.perks.perk.common')->with('copied_from')->with('positions.characters_value.party_weapon.weapon.perks.perk.common')->with('positions.characters_value.party_artifact.artifact.perks.perk.common')->with('positions.characters_value.character.weapons.weapon.perks.perk.common')->with('positions.characters_value.character.artifacts.artifact.perks.perk.common')->with('element')->with('character')->where('id', $id)->get();
         return response()->json([
             'parties' => $parties,
             'success' => true,

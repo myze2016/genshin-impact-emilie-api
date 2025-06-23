@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             PerkSeeder::class,
             ElementSeeder::class,
             WeaponTypeSeeder::class,
+            StatSeeder::class
         ]);
     }
 }

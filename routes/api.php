@@ -88,3 +88,4 @@ Route::post('party-artifact/delete', [PartyArtifactController::class, 'deleteArt
 Route::post('artifact/create/api', [ArtifactController::class, 'addArtifactsApi']);
 Route::post('weapon/create/api', [WeaponController::class, 'addWeaponsApi']);
 Route::middleware('auth:sanctum')->post('party/abyss', [PartyController::class, 'refetchAbyss']);
+Route::middleware('auth:sanctum')->post('perk/match/{id}', [PerkController::class, 'matchCommon']);

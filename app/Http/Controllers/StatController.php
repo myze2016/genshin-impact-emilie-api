@@ -10,7 +10,7 @@ use App\Models\Stat;
 class StatController extends Controller
 {
     public function index(Request $request) {
-        $stats = Stat::where('name', 'LIKE', '%'.$request->search.'%')->orWhere('description', 'LIKE', '%'.$request->search.'%')->orderBy('created_at', 'DESC')->paginate($request->rows_per_page ?? 5);
+        $stats = Stat::get();
       
         return response()->json([
             'stats' => $stats,

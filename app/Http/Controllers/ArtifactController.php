@@ -13,7 +13,7 @@ use App\Models\CharacterArtifact;
 class ArtifactController extends Controller
 {
      public function index(Request $request) {
-        $artifacts = Artifact::where('name', 'LIKE', '%'.$request->search.'%')->with('perks.perk')->paginate($request->rows_per_page ?? 10);
+        $artifacts = Artifact::where('name', 'LIKE', '%'.$request->search.'%')->with('perks.perk.common')->paginate($request->rows_per_page ?? 10);
         return response()->json([
             'artifacts' => $artifacts,
             'success' => true,

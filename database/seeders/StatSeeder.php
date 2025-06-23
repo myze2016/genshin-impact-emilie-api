@@ -14,6 +14,10 @@ class StatSeeder extends Seeder
     public function run(): void
     {
         $stats = [
+            [
+                'name' => 'Offset',
+                'description' => '',
+            ],
              [
                 'name' => 'Elemental Mastery',
                 'description' => '',
