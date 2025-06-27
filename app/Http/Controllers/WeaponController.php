@@ -28,7 +28,9 @@ class WeaponController extends Controller
                 $subQ->where('name', 'LIKE', '%' . $request->search . '%')
                      ->orWhere('description', 'LIKE', '%' . $request->search . '%');
             });
-        })->with('perks.perk')->paginate($request->rows_per_page ?? 10);
+        })->with('perks.perk')->withCount(['character_weapon as related_weapon_count' => function ($query) use ($request) {
+            $query->where('character_id', $request->character_id);
+        }])->orderByDesc('related_weapon_count')->paginate($request->rows_per_page ?? 10);
         return response()->json([
             'weapons' => $weapons,
             'success' => true,

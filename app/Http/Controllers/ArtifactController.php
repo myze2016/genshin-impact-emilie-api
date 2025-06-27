@@ -42,7 +42,9 @@ class ArtifactController extends Controller
                 $subQ->where('name', 'LIKE', '%' . $request->search . '%')
                      ->orWhere('description', 'LIKE', '%' . $request->search . '%');
             });
-        })->with('perks.perk')->paginate($request->rows_per_page ?? 10);
+        })->with('perks.perk')->withCount(['character_artifact as related_artifact_count' => function ($query) use ($request) {
+            $query->where('character_id', $request->character_id);
+        }])->orderByDesc('related_artifact_count')->paginate($request->rows_per_page ?? 10);
         return response()->json([
             'artifacts' => $artifacts,
             'success' => true,
