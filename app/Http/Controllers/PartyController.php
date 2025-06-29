@@ -27,6 +27,8 @@ class PartyController extends Controller
                     $q3->where('name', 'LIKE', '%' . $request->search . '%');
                 });
         })
+        ->orderBy('element_id', 'DESC')
+        ->orderBy('character_id', 'DESC')
         ->paginate($request->rows_per_page ?? 10);
         return response()->json([
             'parties' => $parties,

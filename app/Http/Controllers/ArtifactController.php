@@ -134,13 +134,9 @@ class ArtifactController extends Controller
                     if (!$artifactExist) {
                         Artifact::create([
                             'name' => $artifactInfo['name'],
-                            'api_id' => $artifact
-                        ]);
-                    } else {
-                        $artifactExist->update([
+                            'api_id' => $artifact,
                             '4set' => $artifactInfo['4-piece_bonus'] ?? 'ERROR',
                             '2set' => $artifactInfo['2-piece_bonus'] ?? 'ERROR',
-                            'api_id' => $artifact
                         ]);
                     }
                 }
