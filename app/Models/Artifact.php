@@ -12,6 +12,9 @@ class Artifact extends Model
     protected $fillable = [
         'name',
         'api_id',
+        'ollama',
+        '4set',
+        '2set',
         'created_at',
         'updated_at',
     ];

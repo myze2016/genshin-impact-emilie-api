@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Element;
 use App\Models\Artifact;
+use App\Models\Perk;
 use App\Models\CharacterArtifact;
+use Illuminate\Support\Str;
 
 class ArtifactController extends Controller
 {
@@ -126,7 +128,7 @@ class ArtifactController extends Controller
                 if (!$apiIdExist) {
                     
                     $artifactInfo = Http::retry(3, 200)->get('https://genshin.jmp.blue/artifacts/'.$artifact)->json();
-                      
+                        
                     $artifactExist = Artifact::where('name', $artifactInfo['name'])->first();
                     $imgUrl = 'https://genshin.jmp.blue/artifacts/';
                     if (!$artifactExist) {
@@ -134,14 +136,85 @@ class ArtifactController extends Controller
                             'name' => $artifactInfo['name'],
                             'api_id' => $artifact
                         ]);
-                    } 
-                } 
+                    } else {
+                        $artifactExist->update([
+                            '4set' => $artifactInfo['4-piece_bonus'] ?? 'ERROR',
+                            '2set' => $artifactInfo['2-piece_bonus'] ?? 'ERROR',
+                            'api_id' => $artifact
+                        ]);
+                    }
+                }
             }
             
             return response()->json([
                 'artifactInfo' => $artifactInfo,
                 'success' => true,
                 'message' => 'Artifacts Added Successfully'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function addArtifactsAI(Request $request) {
+        try {
+         
+            $perks2 = Perk::limit(100)->offset(0)->get(['id', 'name']);
+            $perks1 = $perks2->pluck('name')->implode(', ');
+            $artifact = Artifact::where('id', $request->id)->first();
+            $text = $artifact['4set'];
+           $response = Http::post('http://localhost:11434/api/generate', [
+                'model' => 'dolphin-mistral',
+                //   'prompt' => "Read the text of artifact {$text} and list all buffs , if buff exist in {$perks2} better , return only rel"
+                'prompt' => "Classify the following genshin impact artifacts into the buffs provided. Return only the relevant buffs separated by commas.
+                            artifact:
+                            {$artifact->name}
+
+                            Available buffs: {$perks1} 
+                            Return: "
+            ]);
+
+            $rawBody = $response->body();
+
+            // Split by lines and parse each as JSON
+            $lines = explode("\n", trim($rawBody));
+            $fullResponse = '';
+
+            // Collect all 'response' chunks
+            foreach ($lines as $line) {
+                if (Str::of($line)->trim()->isEmpty()) continue;
+
+                $jsonLine = json_decode($line, true);
+                if (isset($jsonLine['response'])) {
+                    $fullResponse .= $jsonLine['response'];
+                }
+            }
+
+
+            // Split into an array by commas
+            $perksArray = array_map('trim', explode(',', $fullResponse));
+       
+            $matchedPerks = collect($perksArray)->map(function ($perkName) use ($perks2) {
+                $matchedPerk = $perks2->first(function ($perk) use ($perkName) {
+                    return strtolower($perk->name) === strtolower($perkName);
+                });
+
+                return [
+                    'id' => $matchedPerk->id ?? null,
+                    'name' => $perkName,
+                ];
+            });
+            
+            return response()->json([
+                'success' => true,
+                'matchedPerks' => $matchedPerks,
+                'text' => $text,
+                'fullResponse' => $fullResponse,
+                '$perksArray' => $perksArray,
+                'message' => 'AI run  Successfully'
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
