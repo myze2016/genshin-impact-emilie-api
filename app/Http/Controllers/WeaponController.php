@@ -41,6 +41,8 @@ class WeaponController extends Controller
      public function getWeaponByParty(Request $request) {
         $weapons = Weapon::where('name', 'LIKE', '%'.$request->search.'%')->with('character_weapon')->with(['party_weapon' => function ($query) use ($request) {
             $query->where('party_character_id', $request->party_character_id);
+        }])->withCount(['character_weapon' => function ($query) use ($request) {
+            $query->where('character_id', $request->character_id);
         }])->withCount(['party_weapon' => function ($query) use ($request) {
             $query->where('party_character_id', $request->party_character_id);
         }])->with('weapon_type')->where('weapon_type_id', $request->weapon_type_id)->orWhereHas('perks', function ($q) use ($request) {
@@ -48,7 +50,7 @@ class WeaponController extends Controller
                 $subQ->where('name', 'LIKE', '%' . $request->search . '%')
                      ->orWhere('description', 'LIKE', '%' . $request->search . '%');
             });
-        })->with('perks.perk')->orderByDesc('party_weapon_count')->paginate($request->rows_per_page ?? 10);
+        })->with('perks.perk')->orderBy('character_weapon_count', 'desc')->orderByDesc('party_weapon_count')->paginate($request->rows_per_page ?? 10);
         return response()->json([
             'weapons' => $weapons,
             'success' => true,

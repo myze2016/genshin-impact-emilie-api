@@ -56,7 +56,9 @@ class ArtifactController extends Controller
 
 
     public function getArtifactByParty(Request $request) {
-        $artifacts = Artifact::withCount(['party_artifact' => function ($query) use ($request) {
+        $artifacts = Artifact::withCount(['character_artifact' => function ($query) use ($request) {
+            $query->where('character_id', $request->character_id);
+        }])->withCount(['party_artifact' => function ($query) use ($request) {
         $query->where('party_character_id', $request->party_character_id);
     }])->where('name', 'LIKE', '%'.$request->search.'%')->with('character_artifact')->with(['party_artifact' => function ($query) use ($request) {
             $query->with(['stat_line.sands_stat', 'stat_line.goblet_stat', 'stat_line.circlet_stat', 'stat_line.sub_stat.stat', 'party_artifact_piece.stat'])->where('party_character_id', $request->party_character_id);
@@ -65,7 +67,7 @@ class ArtifactController extends Controller
                 $subQ->where('name', 'LIKE', '%' . $request->search . '%')
                      ->orWhere('description', 'LIKE', '%' . $request->search . '%');
             });
-        })->with('perks.perk')->orderByDesc('party_artifact_count')->paginate($request->rows_per_page ?? 10);
+        })->with('perks.perk')->orderByDesc('character_artifact_count')->orderByDesc('party_artifact_count')->paginate($request->rows_per_page ?? 10);
         return response()->json([
             'artifacts' => $artifacts,
             'success' => true,
