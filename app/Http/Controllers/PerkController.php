@@ -11,7 +11,14 @@ use Illuminate\Support\Facades\Log;
 class PerkController extends Controller
 {
     public function index(Request $request) {
-        $perks = Perk::with('common')->where('name', 'LIKE', '%'.$request->search.'%')->orWhere('description', 'LIKE', '%'.$request->search.'%')->orderBy('created_at', 'DESC')->paginate($request->rows_per_page ?? 5);
+        $perks = Perk::with('common')
+        ->where('type', 'LIKE', '%'.$request->tab.'%')
+        ->where(function ($q) use ($request) {
+            $q->where('name', 'LIKE', '%'.$request->search.'%')
+            ->orWhere('description', 'LIKE', '%'.$request->search.'%');
+        })
+        ->orderBy('created_at', 'DESC')
+        ->paginate($request->rows_per_page ?? 5);
       
         return response()->json([
             'perks' => $perks,

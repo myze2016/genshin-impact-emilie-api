@@ -165,14 +165,9 @@ class ArtifactController extends Controller
             $artifact = Artifact::where('id', $request->id)->first();
             $text = $artifact['4set'];
            $response = Http::post('http://localhost:11434/api/generate', [
-                'model' => 'dolphin-mistral',
+                'model' => 'llama2',
                 //   'prompt' => "Read the text of artifact {$text} and list all buffs , if buff exist in {$perks2} better , return only rel"
-                'prompt' => "Classify the following genshin impact artifacts into the buffs provided. Return only the relevant buffs separated by commas.
-                            artifact:
-                            {$artifact->name}
-
-                            Available buffs: {$perks1} 
-                            Return: "
+                'prompt' => "You are a text classification assistant. You will be given a piece of text and a list of categories. Classify the text into one of the categories **only if it clearly belongs to one**. If the text does not match any category, do not return anything. Categories: {$perks2} . Text: {$text} "
             ]);
 
             $rawBody = $response->body();
