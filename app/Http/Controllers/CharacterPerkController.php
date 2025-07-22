@@ -16,6 +16,7 @@ class CharacterPerkController extends Controller
         ->withCount(['character_perks as related_perks_count' => function ($query) use ($request) {
             $query->where('character_id', $request->character_id);
         }])
+        ->where('type', 'LIKE', '%' . $request->type . '%')
         ->where('name', 'LIKE', '%' . $request->search . '%')
         ->orderByDesc('related_perks_count')
         ->paginate($request->rows_per_page ?? 10);
